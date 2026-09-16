@@ -73,8 +73,7 @@ class InterventionBackend implements Image_Backend, Flushable
     /**
      * Configure where cached intervention files will be stored
      *
-     * @deprecated 3.3.0 No longer used since image resources are read directly from the asset stream.
-     *             Will be removed without equivalent functionality in 4.0.0.
+     * @deprecated 3.4.0 Will be removed without equivalent functionality to replace it in a future major release.
      */
     private static string $local_temp_path = TEMP_PATH;
 
@@ -98,24 +97,22 @@ class InterventionBackend implements Image_Backend, Flushable
     /**
      * Get the temporary local path for this image
      *
-     * @deprecated 3.3.0 No longer used since image resources are read directly from the asset stream.
-     *             Will be removed without equivalent functionality in 4.0.0.
+     * @deprecated 3.4.0 Will be removed without equivalent functionality to replace it in a future major release.
      */
     public function getTempPath(): ?string
     {
-        Deprecation::notice('3.3.0', 'Will be removed without equivalent functionality in 4.0.0', Deprecation::SCOPE_METHOD);
+        Deprecation::noticeWithNoReplacment('3.4.0');
         return $this->tempPath;
     }
 
     /**
      * Set the temporary local path for this image
      *
-     * @deprecated 3.3.0 No longer used since image resources are read directly from the asset stream.
-     *             Will be removed without equivalent functionality in 4.0.0.
+     * @deprecated 3.4.0 Will be removed without equivalent functionality to replace it in a future major release.
      */
     public function setTempPath(string $path): static
     {
-        Deprecation::notice('3.3.0', 'Will be removed without equivalent functionality in 4.0.0', Deprecation::SCOPE_METHOD);
+        Deprecation::noticeWithNoReplacment('3.4.0');
         $this->tempPath = $path;
         return $this;
     }
@@ -273,12 +270,6 @@ class InterventionBackend implements Image_Backend, Flushable
             throw new InvalidArgumentException('$image must be an instance of ' . InterventionImage::class);
         }
         $this->image = $image;
-        if ($image === null) {
-            // remove our temp file if it exists
-            if (file_exists($this->tempPath ?? '')) {
-                unlink($this->tempPath);
-            }
-        }
         return $this;
     }
 
@@ -704,17 +695,6 @@ class InterventionBackend implements Image_Backend, Flushable
     {
         $key = $this->getErrorCacheKey($hash, $variant);
         return $this->getCache()->get($key.'_reason', null);
-    }
-
-    /**
-     * Make sure we clean up the image resource when this object is destroyed
-     */
-    public function __destruct()
-    {
-        // remove our temp file if it exists
-        if (file_exists($this->tempPath ?? '')) {
-            unlink($this->tempPath ?? '');
-        }
     }
 
     /**
